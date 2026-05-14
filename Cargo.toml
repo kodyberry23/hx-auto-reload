@@ -1,0 +1,16 @@
+[package]
+name = "hx-auto-reload"
+version = "0.1.0"
+edition = "2021"
+description = "Zellij plugin that watches the host folder and fires :reload-all in a helix pane on filesystem changes"
+license = "MIT"
+repository = "https://github.com/kodyberry23/hx-auto-reload"
+
+[dependencies]
+zellij-tile = "0.44.0"
+
+[profile.release]
+lto = true
+opt-level = "z"
+codegen-units = 1
+strip = true

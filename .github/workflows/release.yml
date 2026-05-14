@@ -1,0 +1,47 @@
+name: Release
+# Builds hx-auto-reload.wasm and attaches it to a GitHub release.
+# Trigger: pushing any tag matching v*.*.*.
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-wasip1
+
+      - name: Cache cargo
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock', 'Cargo.toml') }}
+
+      - name: Build release wasm
+        run: cargo build --release
+
+      - name: Stage artifact
+        run: |
+          mkdir -p dist
+          cp target/wasm32-wasip1/release/hx-auto-reload.wasm dist/
+
+      - name: Upload to release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/hx-auto-reload.wasm
+          fail_on_unmatched_files: true
+          generate_release_notes: true

@@ -1,0 +1,21 @@
+// Example zellij layout that hosts hx-auto-reload alongside helix.
+//
+// Run with:  zellij --layout examples/layout.kdl
+//
+// The plugin pane is a 1-row borderless strip at the bottom, similar to
+// how zellij's default status-bar is mounted. The plugin renders nothing,
+// so the row appears blank - that's intentional.
+
+layout {
+    pane name="editor" focus=true {
+        command "hx"
+    }
+    pane size=1 borderless=true {
+        // Adjust this URL to the release tag you're consuming. For
+        // local-build iteration, swap to `file:./target/wasm32-wasip1/release/hx-auto-reload.wasm`.
+        plugin location="https://github.com/kodyberry23/hx-auto-reload/releases/latest/download/hx-auto-reload.wasm" {
+            mode "all"
+            debounce_ms "100"
+        }
+    }
+}
